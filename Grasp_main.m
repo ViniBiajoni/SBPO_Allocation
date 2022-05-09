@@ -23,7 +23,7 @@ med_file='Caso57b104m.txt'; %Plan1
 %med_file='S1_CS5_352M_90M_PMU.med'; %Plan2
 
 %#####################
-sis_file='ieee118.cdf';
+sis_file='ieee57.cdf';
 %##########################################################################
 % Convençoes:
 % - Medidas de fluxo de potencia ativa:     tipo 1
