@@ -1,0 +1,22 @@
+﻿Compilação de 04/06/2020 21:58:14 iniciada.
+     1>Projeto "C:\Users\vinib\OneDrive\Documentos\Inteligencia_Computacional\Trabalho_Final\Crit_find_CPU\Crit_find_CPU.vcxproj" no nó 2 (Build destino(s)).
+     1>InitializeBuildStatus:
+         Criando "Debug\Crit_find_CPU.tlog\unsuccessfulbuild" porque "AlwaysCreate" foi especificado.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\bin\HostX86\x86\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /Oy- /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /permissive- /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"Debug\\" /Fd"Debug\vc142.pdb" /Gd /TP /analyze- /FC /errorReport:prompt CritFind.cpp
+         CritFind.cpp
+         c1xx: error C2338: não há suporte para a pesquisa de nome de duas fases para C++/CLI, C++/CX, ou OpenMP; use /Zc:twoPhase-
+         c1xx: fatal error C1903: Não é possível recuperar de erro(s) anterior(es); interrompendo compilação
+     1>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(429,5): error MSB6006: "CL.exe" foi encerrado com o código 2.
+     1>Projeto de compilação pronto "C:\Users\vinib\OneDrive\Documentos\Inteligencia_Computacional\Trabalho_Final\Crit_find_CPU\Crit_find_CPU.vcxproj" (Build destino(s)) -- FALHA.
+
+FALHA da compilação.
+
+       "C:\Users\vinib\OneDrive\Documentos\Inteligencia_Computacional\Trabalho_Final\Crit_find_CPU\Crit_find_CPU.vcxproj" (Build destino) (1) ->
+       (ClCompile destino) -> 
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(429,5): error MSB6006: "CL.exe" foi encerrado com o código 2.
+
+    0 Aviso(s)
+    1 Erro(s)
+
+Tempo Decorrido 00:00:00.57

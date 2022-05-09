@@ -1,0 +1,17 @@
+Resultado do programa identificador de criticalidades
+
+[]: IDENTIFICAÇÃO DO ARQIVO DE MEDIÇÃO
+
+(): IDENTIFICAÇÃO ARTIGO LONDON
+
+1-tuple
+
+measurement [002] (I3)
+
+2-tuple
+
+measurements [004 008] (I6 F5); [005 006] (F1 F2); [005 001] (F1 I1); [006 001] (F2 I1)
+
+3-tuple
+
+measurements [003,007,009] (I5 F3 F4)

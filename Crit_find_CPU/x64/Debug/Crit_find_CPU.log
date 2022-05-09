@@ -1,0 +1,20 @@
+﻿Compilação de 26/06/2020 18:56:02 iniciada.
+     1>Projeto "C:\Users\vinib\OneDrive\Documentos\Inteligencia_Computacional\Trabalho_Final\Crit_find_CPU\Crit_find_CPU.vcxproj" no nó 2 (Build destino(s)).
+     1>InitializeBuildStatus:
+         Criando "x64\Debug\Crit_find_CPU.tlog\unsuccessfulbuild" porque "AlwaysCreate" foi especificado.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\bin\HostX86\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:column /sdl /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /permissive- /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Debug\\" /Fd"x64\Debug\vc142.pdb" /Gd /TP /FC /errorReport:prompt CritFind.cpp
+         CritFind.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\bin\HostX86\x64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\vinib\OneDrive\Documentos\Inteligencia_Computacional\Trabalho_Final\Crit_find_CPU\x64\Debug\Crit_find_CPU.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG:FASTLINK /PDB:"C:\Users\vinib\OneDrive\Documentos\Inteligencia_Computacional\Trabalho_Final\Crit_find_CPU\x64\Debug\Crit_find_CPU.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\vinib\OneDrive\Documentos\Inteligencia_Computacional\Trabalho_Final\Crit_find_CPU\x64\Debug\Crit_find_CPU.lib" /MACHINE:X64 x64\Debug\CritFind.obj
+         Crit_find_CPU.vcxproj -> C:\Users\vinib\OneDrive\Documentos\Inteligencia_Computacional\Trabalho_Final\Crit_find_CPU\x64\Debug\Crit_find_CPU.exe
+       FinalizeBuildStatus:
+         Excluindo o arquivo "x64\Debug\Crit_find_CPU.tlog\unsuccessfulbuild".
+         Tocando "x64\Debug\Crit_find_CPU.tlog\Crit_find_CPU.lastbuildstate".
+     1>Projeto de compilação pronto "C:\Users\vinib\OneDrive\Documentos\Inteligencia_Computacional\Trabalho_Final\Crit_find_CPU\Crit_find_CPU.vcxproj" (Build destino(s)).
+
+Compilação com êxito.
+    0 Aviso(s)
+    0 Erro(s)
+
+Tempo Decorrido 00:00:02.06

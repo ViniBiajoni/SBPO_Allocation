@@ -1,0 +1,2 @@
+Time = 2700.2 seconds
+Fobj = 212.00
