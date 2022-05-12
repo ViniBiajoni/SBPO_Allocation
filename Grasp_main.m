@@ -18,12 +18,18 @@ clc
  global M
  global start_test
  global time_max
+ 
+%% IEEE 30 bus TEST SYSTEM
+% med_file='ieee30_observability_PSCC_2014B_43.med'; %Plan1
+% sis_file='ieee30.cdf'; 
 %% IEEE 57 bus TEST SYSTEM
 med_file='Caso57b150m.txt'; %Plan1
-%med_file='S1_CS5_352M_90M_PMU.med'; %Plan2
-
 %#####################
 sis_file='ieee57.cdf';
+
+%% IEEE 118 bus TEST SYSTEM
+% med_file='S1_CS5_352M_90M_PMU.med'; %Plan1
+% sis_file='ieee118.cdf'; 
 %##########################################################################
 % Convençoes:
 % - Medidas de fluxo de potencia ativa:     tipo 1
@@ -159,14 +165,20 @@ switch Measurement_system_design
 end
 
 %% #####################################Pre-Processo###################################################################
+teste_reforco_complementar = 0;
+if (teste_reforco_complementar == 0)
+    [Barras_Livres,UMs_Livres]= UMs_complementares(mu_location,Caso.NB);
+else
+    [Barras_Livres,UMs_Livres]= UMs_complementares_parciais(mu_location, Caso.NB, meas_location, MAdj);
+end
 
-[Barras_Livres,UMs_Livres]= UMs_complementares(mu_location,Caso.NB);
+
 UM= repmat(struct('H_parc',[],'Barra',[],'Num_Medidas',[]),1,UMs_Livres);
 UM= montaH(UM,MAdj,Barras_Livres,H,Caso.NB);% Medidas Scada
 disp(UM)
 barras_atuais=Barras_Livres;
 lote=input('Digite o tamanho do lote');%tamanho do lote
-w_k = [1 3.7 1]
+w_k = [1 3.7 1 1];
 Caso_Otim=[num2str(Caso.NB) 'BUS_' 'lote_' num2str(lote) '_UMs_' 'GRASP_Completo' ]; % Define Caso
 
 G_inicial=H'*H;
@@ -174,7 +186,7 @@ E=eye(nm,nm)-((H)*(G_inicial^-1)*H');
 dlmwrite('Covariancia.txt', E, 'delimiter', ' ', 'precision', '%.15f');
 dlmwrite('nmed.txt',nm);
 tic
-dos('Crit_find_CPU.exe');
+dos('CritFindGPU.exe');
 toc
 num_crit=(dlmread('Criticalidades.txt'))';
 disp(num_crit)
@@ -220,8 +232,6 @@ best_solution_inical=sum((w_k.*num_crit)); % valor
 %% ######################################Otimizacao########################################################################### 
 
 alpha_vec=[0.3 0.5 0.8];
-%alpha_vec=[0.3 0.8];%118 novo
-%alpha_vec(1)=0.1;%118 novo teste 2
 index_alpha=1;
 time_max=input('Digite o tempo max em min');
 max_testes=input('Digite o numero de testes');
@@ -319,8 +329,8 @@ while (iter_max<= max_it)&&((toc(start_test)/60)<time_max)%&&(no_change<5)
 %     disp('ok')
 %     
 % end
-%disp(index_alpha);
-%disp(iter_max);
+disp(index_alpha);
+disp(iter_max);
 end
     end_GRASP= toc(start_test);  % count elapsed time for a complete GRASP
     best_crit_testes=[best_crit_testes;best_crit];
@@ -330,18 +340,18 @@ end
 end
 
 time_total_test=toc(start_testes);
-%disp('alpha:')
-%disp(alpha_vec(index_alpha))
-%disp('Time_total=')
-%disp(time_total)
-%end_testes=toc(start_testes); % count elapsed time for all tests
+disp('alpha:')
+disp(alpha_vec(index_alpha))
+disp('Time_total=')
+disp(time_total_test)
+end_testes=toc(start_testes); % count elapsed time for all tests
 
 best_sol_testes = print_UM_Sol(max_testes,best_sol_testes,Barras_Livres,lote);
 
 
 %% PLOTAGENS E SALVAMENTOS
 dlmwrite([Caso_Otim '_Criticalidades_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],best_crit_testes);%tupla
-dlmwrite([Caso_Otim '_Tuplas_bin_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],barras_sol);%valor fpbj
+dlmwrite([Caso_Otim '_Tuplas_bin_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],best_sol_testes);%localizacao das barras-
 dlmwrite([Caso_Otim '_Fobj_values_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],solutions_path); %caminho da otimizacao 
 dlmwrite([Caso_Otim 'total_time_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],end_testes);%tempo
 
