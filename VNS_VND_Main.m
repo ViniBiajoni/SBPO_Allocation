@@ -18,124 +18,13 @@ clc
  global M
  global start_test
  global time_max
-%##########################################################################
-%% 03 bus TEST SYSTEM
-%med_file='3Barras_tese.med';
-%med_file='3Barras_tese(2).med';
-%sis_file='3Barras_tese.cdf';
-%##########################################################################
-%% 06 bus TEST SYSTEM
-%med_file='6BusCase01_TPS2015.med';
-%med_file='6BusCase02_TPS2015.med';
-%med_file='6BusCase05_TPS2015.med';
-%med_file='6BusCase06_TPS2015.med';
-%med_file='6BusCase07_TPS2015.med';
-%med_file='6BusCase08_TPS2015.med';
-%med_file='6Bus_v2Case03_TPS2015.med';
-%med_file='6Bus_v2Case04_TPS2015.med';
-%med_file='6BusCaseUM1.med';
-%med_file='6BusCaseUM2.med';
-%med_file='6BusCaseUM3.med';
-%med_file='6BusCaseUM4.med';
-%med_file='6BusCaseUM5.med';
-%med_file='6BusCaseUM6.med';
-%med_file='6Busv2CaseUM5_UM6.med';
 
-%sis_file='6Bus.cdf';
-%sis_file='6Busv2.cdf';
-%##########################################################################
-%% IEEE 06 bus TEST SYSTEM
-%med_file='ieee6Case01.med';
-%sis_file='ieee6.cdf';
-%##########################################################################
-%% IEEE 14 bus TEST SYSTEM
-%med_file='ieee14_london.med';
-%med_file='ieee14_london_teste.med';
-%med_file='ieee14exampleTPS2017.med';
+med_file='Caso57b150m.txt';
 
-%med_file='ViniIEEE14BusFull_Meas.med';
-%########14 red#######
-% med_file='IEEE14Bus_ViniRedundancy0.4.med';
-% med_file='IEEE14Bus_ViniRedundancy0.5.med';
-% med_file='IEEE14Bus_ViniRedundancy0.6.med';
-% med_file='IEEE14Bus_ViniRedundancy0.7.med';
-% med_file='IEEE14Bus_ViniRedundancy0.8.med';
-% med_file='IEEE14Bus_ViniRedundancy0.9.med';
-%#####################
-%sis_file='ieee14.cdf';
-%##########################################################################
-%% IEEE 24 bus TEST SYSTEM
-%sis_file='ieee24.cdf';
-%########24 red#######
-%med_file='IEEE24Bus_Complete_ViniRedundancy1.5_1.med';
-%med_file='IEEE24Bus_Complete_ViniRedundancy2_1.med';
-%med_file='IEEE24Bus_Complete_ViniRedundancy2.5_1.med';
-%#####################
-%med_file='ViniIEEE24BusFull_Meas.med';
+sis_file='ieee57.cdf';
 
-%med_file='ieee24Case01_SBSE2014.med';%Caso Base OK
-%med_file='24BusUM10eUM15.med';%Caso base com UM10 e UM15 OK
-%med_file='ieee24Case02(4)CBA2016.med';
-%med_file='IEEE24Case02_TPS2015.med';
-%med_file='ieee24Case03_TPS2015.med';
-%med_file='ieee24Case04_TPS2015.med';
-%med_file='ieee24Case05_TPS2015.med';
-%med_file='ieee24Case06_TPS2015.med';
-%med_file='ieee24Case07_TPS2015.med';
-%med_file='ieee24Case07(1)_TPS2015.med';
-%med_file='ieee24Case07(2)_TPS2015.med';
-%med_file='ieee24Case07(3)_TPS2015.med';
-%med_file='ieee24Case08_TPS2015.med';
-%med_file='IEEE24Case08(2)_TPS2015.med';
-%med_file='IEEE24Case08(3)_TPS2015.med';
-%med_file='ieee24Case10_TPS2015.med';
-%med_file='ieee24Case11_TPS2015.med';
-%med_file='ieee24Case12_TPS2015.med';
-%med_file='ieee24Case13_TPS2015.med';
-%med_file='ieee24Case14_TPS2015.med';
-%med_file='ieee24_gen_meet_2013_Obs_CASE01.med';
-%med_file='ieee24_gen_meet_2013_Obs_CASE01.med';
-%med_file='ieee24_gen_meet_2013_case02.med';
-%med_file='ieee24_gen_meet_2013_case03.med';
-%med_file='ieee24_gen_meet_2013_case04.med';
-%med_file='ieee24_gen_meet_2013_case05.med';
-%##########################################################################
-%% IEEE 30 bus TEST SYSTEM
-%med_file='ieee30_observability_PSCC_2014.med';%Caso Base 37 meas 20 MU
-%med_file='S1_CS10_81M.med';
-%med_file='S1_CS10_81M_62M_PMU26491012.med';
-%med_file='ieee30_observability_full_2014.med';
-%econk1= dlmread('IEEE30PSCCk1.txt');
-%med_file='ieee30_observability_PSCC_2014B.med'; % Caso 42 meas
-%med_file='ieee30_observability_PSCC_2014B_43.med'; % Caso 43 meas
+w_k=[1 3.7 1 1.5];
 
-%med_file='ViniIEEE30BusFull_Meas.med';
-%########30 red#######
-%med_file='IEEE30Bus_Complete_ViniRedundancy1.5_1.med';
-%med_file='IEEE30Bus_Complete_ViniRedundancy2_1.med';
-%med_file='IEEE30Bus_Complete_ViniRedundancy2_1.5.med';
-%#####################
-
-%sis_file='ieee30.cdf';
-%##########################################################################
-%% IEEE 118 bus TEST SYSTEM
-%med_file='S1_CS5_352M.med'; %Plan1
-%med_file='S1_CS5_352M_90M_PMU.med'; %Plan2
-%econk1= dlmread('IEEE118k1.txt');
-med_file='118_teste.med';
-%########118 red#######
-% med_file='IEEE118Bus_Complete_ViniRedundancy1.5_1.med';
-% med_file='IEEE118Bus_Complete_ViniRedundancy2_1.med';
-% med_file='IEEE118Bus_Complete_ViniRedundancy2.5_!.med';
-%########118 red#######
-% med_file='IEEE118Bus_ViniRedundancy0.4.med';
-% med_file='IEEE118Bus_ViniRedundancy0.5.med';
-% med_file='IEEE118Bus_ViniRedundancy0.6.med';
-% med_file='IEEE118Bus_ViniRedundancy0.7.med';
-% med_file='IEEE118Bus_ViniRedundancy0.8.med';
-% med_file='IEEE118Bus_ViniRedundancy0.9.med';
-%#####################
-sis_file='ieee118.cdf';
 %##########################################################################
 % Convençoes:
 % - Medidas de fluxo de potencia ativa:     tipo 1
@@ -275,11 +164,11 @@ UM= repmat(struct('H_parc',[],'Barra',[],'Num_Medidas',[]),1,UMs_Livres);
 UM= montaH(UM,MAdj,Barras_Livres,H,Caso.NB);% Medidas Scada
 disp(UM)
 barras_atuais=Barras_Livres;
-%lote=3;%tamanho do lote
+
 lote=input('Digite o tamanho do lote');
-%w_k=[20 1.5];% pesos 118
-w_k=[1 1];% pesos 118_pesado
-%w_k=[10 3 1.5];%pesos 30
+
+
+
 %% Escolhe tipo de Sol Inicial
 tipo_inicio=input('Digite 0 para sol inicial Aleatoria e 1 para Gulosa \n');
 
@@ -297,7 +186,7 @@ E=eye(nm,nm)-((H)*(G_inicial^-1)*H');
 dlmwrite('Covariancia.txt', E, 'delimiter', ' ', 'precision', '%.15f');
 dlmwrite('nmed.txt',nm);
 %tic
-dos('Crit_find_CPU.exe');
+dos('CritFindGPU.exe');
 %toc
 num_crit=(dlmread('Criticalidades.txt'))';
 best_solution_inicial=sum((w_k.*num_crit)); % valor
@@ -363,7 +252,8 @@ if tipo_inicio==0
              complete=1;
          end
      end
-
+     
+%Guloso
 else
     solution=zeros(1,UMs_Livres);
     for i=1:UMs_Livres
@@ -452,6 +342,8 @@ end
 end
 time_total_test=toc(start_testes);% count elapsed time for all tests
 
+best_sol_testes = print_UM_Sol(max_testes,best_sol_testes,Barras_Livres,lote);
+
 %end_testes=toc(start_testes); 
 %% PLOTAGENS E SALVAMENTOS
 dlmwrite([Caso_Otim '_Criticalidades_' '.txt'],best_crit_testes);%tupla
@@ -460,4 +352,3 @@ dlmwrite([Caso_Otim '_Fobj_values_' '.txt'],solutions_path); %caminho da otimiza
 dlmwrite([Caso_Otim 'total_time_' '.txt'],end_testes);%tempo por iteracao
 
 disp('saiu')
-ordisp('ok')

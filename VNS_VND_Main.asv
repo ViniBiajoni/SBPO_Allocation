@@ -18,12 +18,11 @@ clc
  global M
  global start_test
  global time_max
-%% IEEE 57 bus TEST SYSTEM
-med_file='Caso57b150m.txt'; %Plan1
-%med_file='S1_CS5_352M_90M_PMU.med'; %Plan2
 
-%#####################
+med_file='Caso57b150m.txt';
+
 sis_file='ieee57.cdf';
+
 %##########################################################################
 % Convençoes:
 % - Medidas de fluxo de potencia ativa:     tipo 1
@@ -65,8 +64,6 @@ for i=1:Caso.NR
     MAdj(Ramo.de(i),Ramo.para(i))=1;
     MAdj(Ramo.para(i),Ramo.de(i))=1; 
 end
-
-%Intilinprog2
 
 % create Jacobian matrix and measurement system with only real/active measurements
 switch Measurement_system_design
@@ -165,33 +162,41 @@ UM= repmat(struct('H_parc',[],'Barra',[],'Num_Medidas',[]),1,UMs_Livres);
 UM= montaH(UM,MAdj,Barras_Livres,H,Caso.NB);% Medidas Scada
 disp(UM)
 barras_atuais=Barras_Livres;
-lote=input('Digite o tamanho do lote');%tamanho do lote
-w_k = [1 3.7 1]
-Caso_Otim=[num2str(Caso.NB) 'BUS_' 'lote_' num2str(lote) '_UMs_' 'GRASP_Completo' ]; % Define Caso
+
+lote=input('Digite o tamanho do lote');
+
+w_k=[1 3.7 1 1];
+
+%% Escolhe tipo de Sol Inicial
+tipo_inicio=input('Digite 0 para sol inicial Aleatoria e 1 para Gulosa \n');
+
+if tipo_inicio==0
+    tipo_initial_sol='Aleatoria';
+else
+    tipo_initial_sol='Gulosa'; 
+end
+
+%% Inicializa Caso
+Caso_Otim=[num2str(Caso.NB) 'BUS_' 'lote_' num2str(lote) '_UMs_' 'VNS_VND_' tipo_initial_sol ]; % Define Caso
 
 G_inicial=H'*H;
 E=eye(nm,nm)-((H)*(G_inicial^-1)*H');
 dlmwrite('Covariancia.txt', E, 'delimiter', ' ', 'precision', '%.15f');
 dlmwrite('nmed.txt',nm);
-tic
-dos('Crit_find_CPU.exe');
-toc
+%tic
+dos('CritFindGPU.exe');
+%toc
 num_crit=(dlmread('Criticalidades.txt'))';
-disp(num_crit)
-best_solution_inical=sum((w_k.*num_crit)); % valor
+best_solution_inicial=sum((w_k.*num_crit)); % valor
 
 
 %% Testa Guloso - Para Ver quao Perto a Metaheuristica Está Chegando
-% start_exaustivo= tic;
 % combos= combntns(1:UMs_Livres,lote);
 % best_solution=0;
 % best_tuple=[];
 % best_crit=[];
 % for i=1:length(combos(:,1))
-%     disp('Teste\n')
-%     disp(i)
-%     disp('\n----')
-%     sol=zeros(1,UMs_Livres);
+%     sol=zeros(1,:);
 %    for j=1:length(combos(1,:))
 %       sol(combos(i,j))=1;
 %    end
@@ -201,98 +206,107 @@ best_solution_inical=sum((w_k.*num_crit)); % valor
 %     [fobj_atual,num_crit]= eval_solution(H_temp,H,w_k,nm);
 %     actual_fobj= fobj_atual;
 %     actual_crit= num_crit; 
-%     current_sol= sol;
+%     current_sol= solution;
 %     
 %     if (best_solution==0)||(best_solution>actual_fobj)
 %         best_solution= actual_fobj;
 %         best_tuple=current_sol;    
 %         best_crit=actual_crit;
 %     end
-%     toc(start_exaustivo)
-%     allocated_buses=nonzeros(best_tuple.*barras_atuais);
-%     if (toc(start_exaustivo)/60)>=90
-%         break;
-%     end
+%     
 % end
-%toc(start_exaustivo)
-%allocated_buses=nonzeros(best_tuple.*barras_atuais);
 
-%% ######################################Otimizacao########################################################################### 
-
-alpha_vec=[0.3 0.5 0.8];
-%alpha_vec=[0.3 0.8];%118 novo
-%alpha_vec(1)=0.1;%118 novo teste 2
-index_alpha=1;
-time_max=input('Digite o tempo max em min');
-max_testes=input('Digite o numero de testes');
-max_it=input('Digite o numero de iterações');
-while index_alpha<=length(alpha_vec) % testa varios alfas
-
+%% ######################################Otimizacao VNS-VND########################################################################### 
 teste=1; % contador de testes
+max_testes=input('Digite o maximo de testes');
 best_crit_testes=[];
 best_sol_testes=[]; % tupla binaria
 start_testes= tic; 
 end_testes=[];
+max_it=input('Digite o maximo de iteracoes');    
+time_max=input('Digite o tempo max em min');
 solutions_path=zeros(max_testes,max_it+1); % Caminho da otimizacao contando a condicao inicial do sistema
 while teste<=max_testes
-%% CONSTRUTIVO GRASP - baseado no numero de Medidas (Cria uma solucao avaliando pela quantidade de medidas disponivel pela barra)
     iter_max=1;
     %best_sol=1000000;
-    best_solution= best_solution_inical;
     best_crit=[];
     best_sol=[];
-    start_test=tic;    
-    solutions_path(teste,iter_max)=best_solution; % insere a condicao inicial do sistema
-    %% Inicia Tabela Hash/ Lista Tabu 
-    M = containers.Map('KeyType','char','ValueType','any'); 
-while (iter_max<= max_it)&&((toc(start_test)/60)<time_max)%&&(no_change<5)
-    solution=zeros(1,UMs_Livres);
-    sol_aux=ones(1,UMs_Livres);
-    ordenacao1=(1:UMs_Livres);
-    orden_aux=(1:UMs_Livres);%reduz de tamanho
-    alpha=alpha_vec(index_alpha);
-    %alpha=0.5;
-    %alpha=0.8;
-    %alpha=0.3;
-    LC=[];
-    for i=1:length(orden_aux)
-        qualidade(1,i)= UM(orden_aux(i)).Num_Medidas;
-        LC=[LC;orden_aux(i)];
-    end
-    a=[qualidade;LC'];
-    [idx,order]=sort(a(1,:),'descend');%ordena decrescente
-    %[idx,order]=sort(a(1,:));%ordena crescente
-    b= a(:,order);
-    LC=b(2,:);
-    orden_aux1=nonzeros(LC.*sol_aux);
-    orden_aux2=orden_aux1;
-    for i=1:length(orden_aux2)
-       pos_orig(orden_aux2(i),1)= orden_aux2(i);
-       pos_orig(orden_aux2(i),2)= i;
-    end
-    while sum(solution)<lote
-        tam_LRC= ceil(max(1,length(orden_aux1)*alpha));
-        LRC=orden_aux1(1:tam_LRC);
-        random_pos=randi(length(LRC));
-        solution(LRC(random_pos))= 1;
-        sol_aux(pos_orig(LRC(random_pos),2))=0;
-        orden_aux1=nonzeros(orden_aux2'.*sol_aux); 
-        
-    end
-    actual_fobj=0;
-    actual_crit=[];
-    [H_temp]= remonta_H(solution,barras_atuais,UM,H,lote);
-    [fobj_atual,num_crit]= eval_solution(H_temp,H,w_k,nm);
-    actual_fobj=fobj_atual; % fobj construtivo
-    actual_crit=num_crit; 
-    actual_solution=solution; % solution construtivo
+    start_test=tic;
     
+%% solucao inicial
+% Pegando as UMs com mais medidas disponíveis
+if tipo_inicio==0
+ 
+% Aleatoria
+     complete =0;
+     solution=zeros(1,UMs_Livres);
+     while (complete ==0)
+         sorteio=randi(UMs_Livres);
+         if (solution(sorteio)==0)
+             solution(sorteio)=1;
+         end
+ 
+         if (sum(solution)==lote)
+             complete=1;
+         end
+     end
+     
+%Guloso
+else
+    solution=zeros(1,UMs_Livres);
+    for i=1:UMs_Livres
+        temp(i)= i; 
+        barras(i)= UM(i).Barra;
+        meds(i)= UM(i).Num_Medidas;
+    end
+%     prior=[30 33 40 54 70];
+%     for j=1:length(prior)
+%        solution(prior(j))=1;%coloca barras prioritarias
+%        barras(j)=0;
+%        meds(j)=0;
+%        temp(j)=0;
+%     end
+%     barras=nonzeros(barras)';
+%     meds=nonzeros(meds)';
+%     temp=nonzeros(temp)';
+    a=[temp;barras;meds];
+    [idx,order]=sort(a(3,:),'descend'); % ordena decrescente
+    %[idx,order]=sort(a(3,:)); % ordena crescente
+    temp2=a(1,order);
+    for i=1:lote%-length(prior))
+   
+        solution(temp2(1,i))=1;
+    
+    end
+
+end
+
+best_fobj=0;
+best_crit=[];
+[H_temp]= remonta_H(solution,barras_atuais,UM,H,lote);
+[fobj_atual,num_crit]= eval_solution(H_temp,H,w_k,nm);
+%% solucao inicial
+best_fobj=fobj_atual;
+best_crit=num_crit;
+best_sol=solution; 
+
+%% Inicializa Caminho das Solucoes
+solutions_path(teste,iter_max)=best_fobj; % insere a condicao inicial do sistema
+    
+%% Inicia Tabela Hash/ Lista Tabu - Acelera as Iteraçoes Buscando Apenas Novos Vizinhos 
+M = containers.Map('KeyType','char','ValueType','any'); 
+
+while (iter_max<= max_it)&&((toc(start_test)/60)<time_max)
+    
+   k=1;
     %% Teste estruturas de vizinhanca
     %[s_viz_sol,s_viz_fobj,s_viz_crit]= est_viz1_altern(actual_solution);
     %[s_viz_sol,s_viz_fobj,s_viz_crit]= est_viz2_altern(actual_solution);
     %[s_viz_sol,s_viz_fobj,s_viz_crit]= est_viz3_altern(actual_solution);
     %[s_viz_sol,s_viz_fobj,s_viz_crit]= est_viz4_altern(actual_solution);
- 
+  while (k<=4)&&((toc(start_test)/60)<time_max)
+ %% Gera Vizinho Qualquer na Vizinhanca k
+    [actual_solution,actual_fobj,actual_crit]= gera_viz_VNS(best_sol,k); % gera uma vizinhanca aleatoria
  %% processo iterativo - BUSCA LOCAL VND
     sol_VND=[];
     fobj_VND=0;
@@ -301,52 +315,38 @@ while (iter_max<= max_it)&&((toc(start_test)/60)<time_max)%&&(no_change<5)
     %[sol_VND,fobj_VND,crit_VND]=RVND(actual_solution,actual_fobj,actual_crit,Caso.NB);%Teste
     %eventual com ordenacao aleatoria do VND
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Avalia Soluçao %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if (fobj_VND < best_solution)
-        best_solution=fobj_VND; % valor da funcao objetivo
+    if (fobj_VND < best_fobj)
+        best_fobj=fobj_VND; % valor da funcao objetivo
         best_crit=crit_VND; % qtde de criticalidades
         best_sol= sol_VND; % tupla binaria referencia da solucao 
+        k=1;
+    else
+        k=k+1;
+    
     end
     
-    solutions_path(teste,iter_max+1)=best_solution; % Caminho da otimizacao
-    iter_max=iter_max+1;
-% tic
-% while (tempo_total < 5)&&(iter_max<150)
-%    
-%     [H_temp]= remonta_H(solution,barras_atuais,UM,H,lote);
-%     [fobj_atual,num_crit]= eval_solution(H_temp,H,w_k,nm);
-%     tempo_total=toc/60; 
-%     iter_max=iter_max+1;
-%     disp('ok')
-%     
-% end
-%disp(index_alpha);
-%disp(iter_max);
+
+  end
+
+iter_max=iter_max+1;
+solutions_path(teste,iter_max)=best_fobj; % Caminho da otimizacao
+disp(iter_max)
 end
-    end_GRASP= toc(start_test);  % count elapsed time for a complete GRASP
+    end_VNS= toc(start_test);  % count elapsed time for the VNS-VND iterations
     best_crit_testes=[best_crit_testes;best_crit];
     best_sol_testes=[best_sol_testes;best_sol];
-    end_testes=[end_testes;end_GRASP];
+    end_testes=[end_testes;end_VNS];
     teste=teste+1;
 end
-
-time_total_test=toc(start_testes);
-%disp('alpha:')
-%disp(alpha_vec(index_alpha))
-%disp('Time_total=')
-%disp(time_total)
-%end_testes=toc(start_testes); % count elapsed time for all tests
+time_total_test=toc(start_testes);% count elapsed time for all tests
 
 best_sol_testes = print_UM_Sol(max_testes,best_sol_testes,Barras_Livres,lote);
 
-
+%end_testes=toc(start_testes); 
 %% PLOTAGENS E SALVAMENTOS
-dlmwrite([Caso_Otim '_Criticalidades_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],best_crit_testes);%tupla
-dlmwrite([Caso_Otim '_Tuplas_bin_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],barras_sol);%valor fpbj
-dlmwrite([Caso_Otim '_Fobj_values_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],solutions_path); %caminho da otimizacao 
-dlmwrite([Caso_Otim 'total_time_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],end_testes);%tempo
-
-index_alpha=index_alpha+1; % testa outro alpha
-end
+dlmwrite([Caso_Otim '_Criticalidades_' '.txt'],best_crit_testes);%tupla
+dlmwrite([Caso_Otim '_Tuplas_bin_' '.txt'],best_sol_testes);%valor fobj
+dlmwrite([Caso_Otim '_Fobj_values_' '.txt'],solutions_path); %caminho da otimizacao 
+dlmwrite([Caso_Otim 'total_time_' '.txt'],end_testes);%tempo por iteracao
 
 disp('saiu')
-disp('ok')

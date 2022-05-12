@@ -336,12 +336,14 @@ time_total_test=toc(start_testes);
 %disp(time_total)
 %end_testes=toc(start_testes); % count elapsed time for all tests
 
-best_sol_testes = print_UM_Sol(max_testes,best_sol_testes,Barras_Livres,lote);
+barras_sol=zeros(max_testes,lote)
+for i=1:length(Barras_Livres): 
+
 
 
 %% PLOTAGENS E SALVAMENTOS
 dlmwrite([Caso_Otim '_Criticalidades_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],best_crit_testes);%tupla
-dlmwrite([Caso_Otim '_Tuplas_bin_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],barras_sol);%valor fpbj
+dlmwrite([Caso_Otim '_Tuplas_bin_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],best_sol_testes);%valor fpbj
 dlmwrite([Caso_Otim '_Fobj_values_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],solutions_path); %caminho da otimizacao 
 dlmwrite([Caso_Otim 'total_time_' '_alpha_' num2str(alpha_vec(index_alpha)) '.txt'],end_testes);%tempo
 

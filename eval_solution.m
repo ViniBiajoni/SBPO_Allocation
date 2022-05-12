@@ -5,7 +5,7 @@ G1=H_temp'*H_temp;
 E=eye(nm_2+nm,nm_2+nm)-((H_temp)*(G1^-1)*H_temp');
 dlmwrite('Covariancia.txt', E, 'delimiter', ' ', 'precision', '%.15f');
 dlmwrite('nmed.txt',nm+nm_2);
-dos('Crit_find_CPU.exe');
+dos('CritFindGPU.exe');
 num_crit=(dlmread('Criticalidades.txt'))';
 
 fobj=sum((w_k.*num_crit));
