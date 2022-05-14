@@ -9,15 +9,15 @@ addpath(strcat(current_path,'\sistemas'),path); % add sistemas folder
 cd(original_path);
 clc
 
- global barras_atuais
- global UM
- global lote
- global H
- global nm
- global w_k
- global M
- global start_test
- global time_max
+global barras_atuais
+global UM
+global lote
+global H
+global nm
+global w_k
+global M
+global start_test
+global time_max
 
 med_file='Caso57b150m.txt';
 

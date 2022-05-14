@@ -1,34 +1,28 @@
 %% lendo o arquivo e montando matriz de conexão
-%      A= (dlmread('conex118.txt'));
+%     A= (dlmread('conex118.txt'));
 %     A= dlmread('conex30.txt');
-     %A= dlmread('conex24.txt');
-%     A=A(:,1:2);
-%     [m,n]=size(A);
-%        
-%     for i =1:m
-%         Conexao(A(i,1),A(i,2))=1;
-%         Conexao(A(i,2),A(i,1))=1;
-%     end
-%     
-%   
-%     for i = 1:tamc
-%         for j = 1:tamc
-%             if i==j 
-%                 Conexao(i,j)=1;
-%             end
-%         end
-%     end
+%     A= dlmread('conex24.txt');
+    A = dlmread('conex57.txt');
+    A=A(:,1:2);
+    [m,n]=size(A);
+       
+    for i =1:m
+        Conexao(A(i,1),A(i,2))=1;
+        Conexao(A(i,2),A(i,1))=1;
+    end
+    
+  
+    for i = 1:tamc
+        for j = 1:tamc
+            if i==j 
+                Conexao(i,j)=1;
+            end
+        end
+    end
 
 
 Conexao= MAdj;
-[taml,tamc]=size(Conexao);
-caso_med=dlmread('ieee118CaseFULLPF.med');
-%%Injecoes
-% for i=1:Caso.NB
-%    caso_med() 
-% end
-%% Fluxos
-num_UMs=input('Digite o numero de UMs a serem alocadas');
+
 b=ones(tamc,1);
 f=ones(tamc,1);
 b=b*-1;
@@ -38,6 +32,14 @@ lb=zeros(tamc,1);
 ub=ones(tamc,1);
 y=intlinprog(f,intcon,Conexao,b,[],[],lb,ub);
 
+num_UMs=input('Digite o numero de UMs a serem alocadas');
+[taml,tamc]=size(Conexao);
+% caso_med=dlmread('ieee118CaseFULLPF.med');
+%%Injecoes
+% for i=1:Caso.NB
+%    caso_med() 
+% end
+%% Fluxos
 
 for cases=1:10
 caso_med(:,7)=1;    
